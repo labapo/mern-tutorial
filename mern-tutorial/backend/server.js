@@ -1,7 +1,7 @@
+const dotenv = require("dotenv").config()//allows us to have a .env file with variables in it 
 //bring express and environment variables
 const express = require("express")
 const colors = require("colors")
-const dotenv = require("dotenv").config()//allows us to have a .env file with variables in it 
 const {errorHandler} = require("./middleware/errorMiddleware")
 const connectDB = require('./config/db')
 const port = process.env.PORT || 3000//port we want our server to listen on

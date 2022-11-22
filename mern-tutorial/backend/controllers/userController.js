@@ -26,14 +26,14 @@ const registerUser = asyncHandler(async(req, res) => {
     const user = await User.create({
         name, 
         email, 
-        password: hashedPassword
+        password: hashedPassword,
     })
     if (user) {
         res.status(201).json({
-            _id: user._id,
+            _id: user.id,
             name: user.name,
             email: user.email,
-            token: generateToken(user._id)
+            token: generateToken(user._id),
         })
     } else{
         res.status(400)
@@ -51,7 +51,7 @@ const loginUser = asyncHandler(async(req, res) => {
     //check password. Checks the text only user password with the hashed password
     if (user && (await bcrypt.compare(password, user.password))) {
         res.json({
-            _id: user._id,
+            _id: user.id,
             name: user.name,
             email: user.email, 
             token: generateToken(user._id)
@@ -67,7 +67,12 @@ const loginUser = asyncHandler(async(req, res) => {
 //@access Private
 //has an example of how to protect a route
 const getMe = asyncHandler(async (req, res) => {
-    res.json({message: "Display user data"})
+    const {_id, name, email} = await User.findById(req.user.id)
+    res.status(200).json({
+        id:_id,
+        name, 
+        email,
+    })
 })
 
 
@@ -82,3 +87,4 @@ module.exports = {
     loginUser, 
     getMe,
 }
+

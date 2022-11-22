@@ -17,6 +17,9 @@ app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 //api/goals will send to the goal routes js and we exported all the goal routes
 app.use("/api/goals", require("./routes/goalRoutes"))
+//for the user routes
+app.use("/api/users", require("./routes/userRoutes"))
+
 app.use(errorHandler)
 
 //takes in a port number

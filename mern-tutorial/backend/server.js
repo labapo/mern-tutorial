@@ -4,7 +4,7 @@ const express = require("express")
 const colors = require("colors")
 const {errorHandler} = require("./middleware/errorMiddleware")
 const connectDB = require('./config/db')
-const port = process.env.PORT || 3000//port we want our server to listen on
+const port = process.env.PORT || 5000//port we want our server to listen on
 
 connectDB()
 const app = express()

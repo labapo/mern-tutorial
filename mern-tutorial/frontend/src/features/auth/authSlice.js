@@ -5,7 +5,7 @@ import authService from "./authService"
 //get user from local storage
 const user= JSON.parse(localStorage.getItem("user"))
 const initialState = {
-    user: null ? user : null,
+    user: user ? user : null,
     //if we get an error back to that server, we can make it true
     isError: false,
     isSuccess: false,
@@ -30,6 +30,31 @@ export const register = createAsyncThunk(
             return thunkAPI.rejectWithValue(message)
     }
 })
+
+//login user
+//async thunk function
+export const login = createAsyncThunk(
+    "auth/login", async (user, thunkAPI) =>
+    {
+    try{
+        return await authService.login(user)
+    } catch (error) {
+        const message = (
+            error.response && 
+            error.response.data && 
+            error.response.data.message)
+            || error.message
+            || error.toString()
+            return thunkAPI.rejectWithValue(message)
+    }
+})
+
+export const logout = createAsyncThunk('auth/logout',
+async () => {
+    await authService.logout()
+})
+
+
 //create slice
 export const authSlice= createSlice({
     name: 'auth',
@@ -62,6 +87,25 @@ export const authSlice= createSlice({
                 state.isError = true 
                 //a message will be passed if rejected ref. line 30
                 state.message = action.payload
+                state.user = null
+            })
+            .addCase(login.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(login.fulfilled, (state, action) => {//action means getting user info back like token
+                //what is going on when the register is fufilled and there's data coming back
+                state.isLoading = false//reset back to false
+                state.isSuccess = true
+                state.user = action.payload//response from the backend
+            })//what happens when the register is rejected
+            .addCase(login.rejected, (state, action) => {
+                state.isLoading = false
+                state.isError = true 
+                //a message will be passed if rejected ref. line 30
+                state.message = action.payload
+                state.user = null
+            })
+            .addCase(logout.fulfilled, (state) => {
                 state.user = null
             })
     }
